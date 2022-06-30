@@ -15,6 +15,7 @@
     "installable": True,
     "auto_install": True,
     "depends": [
+        "product",
         "l10n_it_fatturapa_out",
         "l10n_it_fatturapa_in",
         "l10n_it_reverse_charge",
