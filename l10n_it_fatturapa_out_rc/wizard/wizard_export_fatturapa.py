@@ -24,6 +24,15 @@ class WizardExportFatturapa(models.TransientModel):
         return sign
 
     @api.model
+    def getPayments(self, invoice):
+        payments = super().getPayments(invoice)
+        sign = self.getSign(invoice)
+        for payment in payments:
+            payment.amount_currency *= sign
+            payment.debit *= sign
+        return payments
+
+    @api.model
     def getImportoTotale(self, invoice):
         amount_total = super().getImportoTotale(invoice)
         amount_total *= self.getSign(invoice)

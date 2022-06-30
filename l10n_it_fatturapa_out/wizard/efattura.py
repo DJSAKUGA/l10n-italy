@@ -211,6 +211,11 @@ class EFatturaOut:
             wiz = self.env["wizard.export.fatturapa"]
             return wiz.getImportoTotale(invoice)
 
+        def get_payments(invoice):
+            # wrapper to a method in wizard (for better overriding)
+            wiz = self.env["wizard.export.fatturapa"]
+            return wiz.getPayments(invoice)
+
         def fpa_to_eur(amount, invoice):
             currency = invoice.currency_id
             euro = self.env.ref("base.EUR")
@@ -252,6 +257,7 @@ class EFatturaOut:
             "wizard": self.wizard,
             "get_importo": get_importo,
             "get_importo_totale": get_importo_totale,
+            "get_payments": get_payments,
             "all_taxes": {
                 invoice.id: get_all_taxes(invoice) for invoice in self.invoices
             },
