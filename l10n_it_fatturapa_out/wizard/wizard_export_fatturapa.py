@@ -90,6 +90,31 @@ class WizardExportFatturapa(models.TransientModel):
         return partner
 
     @api.model
+    def getPayments(self, invoice):
+        """Entry point for other modules to override computation of
+        DettaglioPagamento
+
+        We use a specialized class to allow other modules change
+        values w/o altering the original lines"""
+
+        class _Payment:
+            __slots__ = "date_maturity", "amount_currency", "debit"
+
+            def __init__(self, date_maturity, amount_currency, debit):
+                self.date_maturity = date_maturity
+                self.amount_currency = amount_currency
+                self.debit = debit
+
+        payments = []
+        for line in invoice.line_ids.filtered(
+            lambda line: line.account_id.user_type_id.type in ("receivable", "payable")
+        ):
+            payments.append(
+                _Payment(line.date_maturity, line.amount_currency, line.debit)
+            )
+        return payments
+
+    @api.model
     def getImportoTotale(self, invoice):
         """Entry point for other modules to override computation of
         ImportoTotaleDocumento"""
